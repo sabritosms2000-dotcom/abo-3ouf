@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile – Abo-Auf Shop</title>
+  <meta name="description" content="View and edit your abu auf Shop profile."/>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <span class="brand-icon">🌰</span>
+    Abo-Auf Shop
+  </div>
+  <div class="navbar-links">
+    <a class="nav-link" th:href="@{/products}">Products</a>
+    <!-- Admin link shown only for admins -->
+    <a class="nav-link"
+       th:if="${user.role == 'ADMIN'}"
+       th:href="@{/admin}"
+       style="background:#1f4d36; color:white;">⚙ Admin</a>
+    <a class="nav-link" th:href="@{/logout}">Logout</a>
+    <a class="cart-btn" th:href="@{/cart}">🛒 Cart</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <h1>My Profile</h1>
+    <p>Manage your account information</p>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<main class="container profile-section">
+  <div class="profile-grid">
+
+    <!-- Left card: info summary -->
+    <div class="profile-info-card">
+      <div class="profile-info-card-header">
+        <div class="profile-avatar">👤</div>
+        <h3 th:text="${user.firstName + ' ' + user.lastName}">Full Name</h3>
+        <p th:text="${user.email}">email@example.com</p>
+      </div>
+      <div class="profile-info-body">
+        <div class="profile-info-row">
+          <span class="label">First Name</span>
+          <span class="value" th:text="${user.firstName}">—</span>
+        </div>
+        <div class="profile-info-row">
+          <span class="label">Last Name</span>
+          <span class="value" th:text="${user.lastName}">—</span>
+        </div>
+        <div class="profile-info-row">
+          <span class="label">Email</span>
+          <span class="value" th:text="${user.email}">—</span>
+        </div>
+        <div class="profile-info-row">
+          <span class="label">Role</span>
+          <span class="role-badge admin" th:if="${user.role == 'ADMIN'}">⚙ Admin</span>
+          <span class="role-badge" th:if="${user.role != 'ADMIN'}">🛍 Customer</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right card: edit form -->
+    <div class="admin-card">
+      <h2>✏️ Edit Profile</h2>
+
+      <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+
+      <form th:action="@{/profiles/update}" method="post"
+            style="display:flex; flex-direction:column; gap:0.2rem;">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input id="firstName" type="text" name="firstName"
+                 th:value="${user.firstName}" required/>
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input id="lastName" type="text" name="lastName"
+                 th:value="${user.lastName}" required/>
+        </div>
+        <div style="margin-top:0.5rem;">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <p>© 2026 abo auf Shop · All rights reserved</p>
+</footer>
+
+</body>
+</html>
