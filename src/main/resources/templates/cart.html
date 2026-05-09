@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart – abo auf Shop</title>
+  <meta name="description" content="Review and checkout your cart items."/>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <span class="brand-icon">🌰</span>
+    Abo Auf Shop
+  </div>
+  <div class="navbar-links">
+    <a class="nav-link" th:href="@{/products}">Products</a>
+    <a class="nav-link" th:href="@{/profiles/view}">Profile</a>
+    <a class="nav-link" th:href="@{/logout}">Logout</a>
+    <a class="cart-btn" th:href="@{/cart}">🛒 Cart</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="container">
+    <h1>Your Cart 🛒</h1>
+    <p>Review your items before checkout</p>
+  </div>
+</div>
+
+
+<main class="container cart-section">
+
+
+  <div class="empty-state" th:if="${#lists.isEmpty(cartItems)}">
+    <div class="empty-icon">🛒</div>
+    <h2>Your cart is empty</h2>
+    <a class="btn btn-primary" th:href="@{/products}">Browse Products</a>
+  </div>
+
+
+  <div th:if="${!#lists.isEmpty(cartItems)}">
+    <div class="cart-page-header">
+      <h2>Items in Cart</h2>
+    </div>
+
+    <table class="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Unit Price</th>
+          <th>Qty</th>
+          <th>Subtotal</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="item : ${cartItems}">
+          <td>
+            <span class="cart-product-name" th:text="${item.product.name}">Product</span>
+          </td>
+          <td class="cart-price">$<span th:text="${item.product.price}">0.00</span></td>
+          <td th:text="${item.quantity}">1</td>
+          <td class="cart-price">$<span th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 1, 2)}">0.00</span></td>
+          <td>
+            <form th:action="@{'/cart/remove/' + ${item.id}}" method="post" style="display:inline">
+              <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="cart-summary">
+      <div class="cart-total">
+        Total: <span>$<span th:text="${total}">0.00</span></span>
+      </div>
+      <div style="display:flex; gap:0.7rem;">
+        <a class="btn btn-outline" th:href="@{/products}">← Continue Shopping</a>
+        <button class="btn btn-gold">Checkout →</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p>© 2026 abo auf Shop · All rights reserved</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Products – abo auf Shop</title>
+  <meta name="description" content="Browse our premium selection of abo-auf, dried fruits and healthy snacks."/>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-brand">
+    <span class="brand-icon">🌰</span>
+    Abo-Auf Shop
+  </div>
+  <div class="navbar-links">
+    <a class="nav-link" th:href="@{/profiles/view}">Profile</a>
+    <a class="nav-link" th:href="@{/logout}">Logout</a>
+    <a class="cart-btn" th:href="@{/cart}">
+      🛒 Cart
+    </a>
+  </div>
+</nav>
+
+
+<header class="hero-header">
+  <div class="container">
+    <h1>Welcome to Abo-Auf:)</h1>
+    <p>Hand-picked quality nuts &amp; dried fruits — straight to your door.</p>
+  </div>
+</header>
+
+
+<main class="container">
+
+  <div class="products-grid" th:if="${!#lists.isEmpty(products)}">
+    <div class="product-card" th:each="product : ${products}">
+      <div class="product-card-emoji">🥜</div>
+      <div class="product-card-body">
+        <h3 th:text="${product.name}">Product Name</h3>
+        <p th:text="${product.description}">Description here</p>
+        <div class="product-price">
+          $<span th:text="${product.price}">0.00</span>
+        </div>
+        <form th:action="@{/cart/add}" method="post">
+          <input type="hidden" name="productId" th:value="${product.id}"/>
+          <button type="submit" class="btn-add-cart">Add to Cart 🛒</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" th:if="${#lists.isEmpty(products)}">
+    <div class="empty-icon">🥜</div>
+    <h2>No products available yet</h2>
+    <p>Check back soon — we're stocking up!</p>
+  </div>
+
+</main>
+
+<footer class="footer">
+  <p>© 2026 abo auf Shop · All rights reserved</p>
+</footer>
+
+</body>
+</html>

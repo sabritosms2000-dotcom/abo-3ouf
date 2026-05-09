@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel – Abo-Auf</title>
+  <meta name="description" content="Manage products in the Nuts Shop admin panel."/>
+  <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+
+
+<nav class="navbar">
+  <div class="navbar-brand">
+    <span class="brand-icon">🌰</span>
+    Abo-Auf
+  </div>
+  <div class="navbar-links">
+    <a class="nav-link" th:href="@{/products}">Products</a>
+    <a class="nav-link" th:href="@{/profiles/view}">Profile</a>
+    <a class="nav-link" th:href="@{/logout}">Logout</a>
+  </div>
+</nav>
+
+
+<div class="page-header">
+  <div class="container">
+    <h1>⚙️ Admin Panel</h1>
+    <p>Add, edit and delete products</p>
+  </div>
+</div>
+
+
+<main class="container">
+
+  <div class="admin-grid">
+
+
+    <div class="admin-card" style="position:sticky; top:90px;">
+      <h2>➕ Add New Product</h2>
+      <form th:action="@{/admin/add}" method="post">
+        <div class="form-group">
+          <label for="addName">Product Name</label>
+          <input id="addName" type="text" name="name"
+                 placeholder="e.g. Cashews Premium" required/>
+        </div>
+        <div class="form-group">
+          <label for="addDesc">Description</label>
+          <textarea id="addDesc" name="description"
+                    placeholder="Short description..."></textarea>
+        </div>
+        <div class="form-group">
+          <label for="addPrice">Price (USD)</label>
+          <input id="addPrice" type="number" name="price"
+                 step="0.01" min="0" placeholder="0.00" required/>
+        </div>
+        <button type="submit" class="btn-submit">Add Product</button>
+      </form>
+    </div>
+
+
+    <div class="admin-card">
+      <h2>📦 All Products
+        (<span th:text="${#lists.size(products)}">0</span>)
+      </h2>
+
+      <p style="color:#9ca3af; text-align:center; padding:2rem 0;"
+         th:if="${#lists.isEmpty(products)}">
+        No products yet. Add one on the left!
+      </p>
+
+      <div th:each="product : ${products}">
+        <div class="product-list-item">
+          <div class="product-list-info">
+            <h4 th:text="${product.name}">Product Name</h4>
+            <p  th:text="${product.description}">Description</p>
+          </div>
+          <div class="product-list-price">
+            $<span th:text="${product.price}">0.00</span>
+          </div>
+          <div class="product-list-actions">
+
+            <button class="btn btn-edit btn-sm edit-btn"
+                    th:data-id="${product.id}"
+                    th:data-name="${product.name}"
+                    th:data-desc="${product.description}"
+                    th:data-price="${product.price}">
+              ✏️
+            </button>
+
+            <form th:action="@{/admin/delete/{id}(id=${product.id})}" method="post"
+                  onsubmit="return confirm('Delete this product?')">
+              <button type="submit" class="btn btn-danger btn-sm">🗑</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+
+<div class="edit-modal-overlay" id="editModal">
+  <div class="edit-modal">
+    <h3>✏️ Edit Product</h3>
+    <form id="editForm" method="post">
+      <div class="form-group">
+        <label for="editName">Product Name</label>
+        <input id="editName" type="text" name="name" required/>
+      </div>
+      <div class="form-group">
+        <label for="editDesc">Description</label>
+        <textarea id="editDesc" name="description"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="editPrice">Price (USD)</label>
+        <input id="editPrice" type="number" name="price"
+               step="0.01" min="0" required/>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary" style="flex:1;">
+          Save Changes
+        </button>
+        <button type="button" class="btn btn-outline" id="cancelEdit">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>© 2026 abo auf Shop · All rights reserved</p>
+</footer>
+
+<script>
+
+  document.querySelectorAll('.edit-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var id    = this.getAttribute('data-id');
+      var name  = this.getAttribute('data-name')  || '';
+      var desc  = this.getAttribute('data-desc')  || '';
+      var price = this.getAttribute('data-price') || '';
+
+      document.getElementById('editName').value  = name;
+      document.getElementById('editDesc').value  = desc;
+      document.getElementById('editPrice').value = price;
+      document.getElementById('editForm').action = '/admin/edit/' + id;
+
+      document.getElementById('editModal').classList.add('open');
+    });
+  });
+
+
+  function closeModal() {
+    document.getElementById('editModal').classList.remove('open');
+  }
+
+  document.getElementById('cancelEdit').addEventListener('click', closeModal);
+
+
+  document.getElementById('editModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+</script>
+
+</body>
+</html>
